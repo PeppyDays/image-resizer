@@ -29,12 +29,12 @@ def resize(
 
     # If one of width and height is None, resize the image keeping the ratio
     if width is not None and height is not None:
-        resized_stream = _resize_exactly(stream, fmt.name(), width, height, quality)
+        resized_stream = _resize_exactly(stream, fmt, width, height, quality)
         stream.close()
         return resized_stream
 
     # If both width and height are not None, resize the image exactly and ignore the ratio
-    resized_stream = _resize_proportionally(stream, fmt.name(), width, height, quality)
+    resized_stream = _resize_proportionally(stream, fmt, width, height, quality)
     stream.close()
     return resized_stream
 
@@ -66,21 +66,21 @@ def _check_too_long_length(width, height):
 
 
 def _resize_exactly(
-    stream: BytesIO, fmt: str, width: int, height: int, quality: int
+    stream: BytesIO, fmt: ImageFormat, width: int, height: int, quality: int
 ) -> BytesIO:
-    image = Image.open(stream, formats=[fmt])
+    image = Image.open(stream, formats=[fmt.name()])
     image = image.resize((width, height))
     return _convert_image_to_bytes_stream(image, fmt, quality)
 
 
 def _resize_proportionally(
     stream: BytesIO,
-    fmt: str,
+    fmt: ImageFormat,
     width: int | None,
     height: int | None,
     quality: int,
 ) -> BytesIO:
-    image = Image.open(stream, formats=[fmt])
+    image = Image.open(stream, formats=[fmt.name()])
     width, height = _fill_missing_length(image.width, image.height, width, height)
     image.thumbnail((width, height))
     return _convert_image_to_bytes_stream(image, fmt, quality)
@@ -100,9 +100,11 @@ def _fill_missing_length(
     return width, height
 
 
-def _convert_image_to_bytes_stream(image: Image, fmt: str, quality: int) -> BytesIO:
+def _convert_image_to_bytes_stream(
+    image: Image, fmt: ImageFormat, quality: int
+) -> BytesIO:
     stream = BytesIO()
-    image.save(stream, format=fmt, optimize=True, quality=quality)
+    image.save(stream, format=fmt.name(), optimize=True, quality=quality)
     return stream
 
 
