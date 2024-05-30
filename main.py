@@ -4,14 +4,29 @@ from io import BytesIO
 import boto3
 
 from image_resizer.image import resize
-from image_resizer.request import parse
+from image_resizer.request import parse, take_resizing_hint
 from image_resizer.response import finalize
 from image_resizer.storage import load
 
 
 def handle(event, _context):
+    config = event["Records"][0]["cf"]["config"]
     request = event["Records"][0]["cf"]["request"]
-    response = event["Records"][0]["cf"]["response"]
+
+    match config["eventType"]:
+        case "origin-request":
+            return _handle_origin_request_event(request)
+        case "origin-response":
+            response = event["Records"][0]["cf"]["response"]
+            return _handle_origin_response_event(request, response)
+
+
+def _handle_origin_request_event(request):
+    return take_resizing_hint(request)
+
+
+def _handle_origin_response_event(request: dict, response: dict) -> dict:
+    # Create a BytesIO stream for image early to avoid undefined variable error
     stream = BytesIO()
 
     # If the response from S3 is not OK (meaning the object doesn't exist),
