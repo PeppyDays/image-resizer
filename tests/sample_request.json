@@ -1,0 +1,126 @@
+{
+  "Records": [
+    {
+      "cf": {
+        "config": {
+          "distributionDomainName": "d354lb7yokbigu.cloudfront.net",
+          "distributionId": "E3GX0OPFXFFRUM",
+          "eventType": "origin-response",
+          "requestId": "4u6GpQZ92h2BBBDivBbMlcSKOSQIdfcT4Ta4rOjBrfWCK_12CipLeA=="
+        },
+        "request": {
+          "clientIp": "118.131.29.165",
+          "headers": {
+            "x-forwarded-for": [
+              {
+                "key": "X-Forwarded-For",
+                "value": "118.131.29.165"
+              }
+            ],
+            "user-agent": [
+              {
+                "key": "User-Agent",
+                "value": "Amazon CloudFront"
+              }
+            ],
+            "via": [
+              {
+                "key": "Via",
+                "value": "2.0 a33b4a7ade2c9b4c38f3755095420bea.cloudfront.net (CloudFront)"
+              }
+            ],
+            "accept-encoding": [
+              {
+                "key": "Accept-Encoding",
+                "value": "br,gzip"
+              }
+            ],
+            "host": [
+              {
+                "key": "Host",
+                "value": "kos-prod-visitor-image-files.s3.ap-northeast-2.amazonaws.com"
+              }
+            ]
+          },
+          "method": "GET",
+          "origin": {
+            "s3": {
+              "authMethod": "none",
+              "customHeaders": {},
+              "domainName": "kos-prod-visitor-image-files.s3.ap-northeast-2.amazonaws.com",
+              "path": ""
+            }
+          },
+          "querystring": "w=108&h=108",
+          "uri": "/644b79d146ab870566a66a25/202312291340365002.jpg"
+        },
+        "response": {
+          "headers": {
+            "x-amz-id-2": [
+              {
+                "key": "x-amz-id-2",
+                "value": "OnSecHb0DrsiWWetZIZwRkHKkXVsRv6zA2+lWJveV42z64+qcbtD6BYqqPg7jZFLprKY391FSz0="
+              }
+            ],
+            "x-amz-request-id": [
+              {
+                "key": "x-amz-request-id",
+                "value": "KVK40AJVBV72XZZY"
+              }
+            ],
+            "date": [
+              {
+                "key": "Date",
+                "value": "Mon, 29 Apr 2024 09:36:24 GMT"
+              }
+            ],
+            "last-modified": [
+              {
+                "key": "Last-Modified",
+                "value": "Tue, 20 Feb 2024 20:02:05 GMT"
+              }
+            ],
+            "etag": [
+              {
+                "key": "ETag",
+                "value": "\"0563e39bd22f9d669dc54985b8d10b2d\""
+              }
+            ],
+            "x-amz-server-side-encryption": [
+              {
+                "key": "x-amz-server-side-encryption",
+                "value": "AES256"
+              }
+            ],
+            "accept-ranges": [
+              {
+                "key": "Accept-Ranges",
+                "value": "bytes"
+              }
+            ],
+            "server": [
+              {
+                "key": "Server",
+                "value": "AmazonS3"
+              }
+            ],
+            "content-type": [
+              {
+                "key": "Content-Type",
+                "value": "image/jpeg"
+              }
+            ],
+            "content-length": [
+              {
+                "key": "Content-Length",
+                "value": "727858"
+              }
+            ]
+          },
+          "status": "200",
+          "statusDescription": "OK"
+        }
+      }
+    }
+  ]
+}
