@@ -4,9 +4,24 @@
 
 ![CloudFront with Lambda@Edge](https://d2908q01vomqb2.cloudfront.net/5b384ce32d8cdef02bc3a139d4cac0a22bb029e8/2018/02/01/1.png)
 
-This is a simple image resizer for image download via CloudFront. It is implemented as a Lambda@Edge function. Specifically, this Lambda@Edge function is triggered by the `Origin Response` event. When the function is triggered, it checks the requested image size and resizes the image to the requested size. The resized image is then returned to the user.
+This is a simple image resizer for image download via CloudFront. It is implemented as a Lambda@Edge function. Specifically, this Lambda@Edge function is triggered by the `Origin Request` and `Origin Response` events. When the function is triggered, it checks the requested image size and resizes the image to the requested size. The resized image is then returned to the user.
 
 ## Image Resizing Process
+
+### Origin Request Process
+
+For backward compatibility, the Lambda function is triggered by the `Origin Request` event for some specific cases. If the requested URI is like `/path/to/file_L.jpg`, the postfix of the file name `_L` is used to resize the image. Let's call the postfix as resizing hint. There are four types of resizing hints:
+
+- `_T` wants to resize the image width to 100 px
+- `_S` wants to resize the image width to 200 px
+- `_M` wants to resize the image width to 300 px
+- `_L` wants to resize the image width to 400 px
+
+> The specific width of each postfix should be rechecked and updated if necessary.
+
+After parsing the resizing hint from the requested URI, the Lambda function modifies the URI without the resizing hint and adjust query string to have the matched width. `w` parameter in query string is the requested width for resizing.
+
+### Origin Response Process
 
 From the request via CloudFront, there are some parameters that are used to resize the image. The parameters are as follows:
 
