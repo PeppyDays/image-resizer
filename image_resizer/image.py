@@ -8,6 +8,8 @@ from PIL import Image
 DEFAULT_QUALITY = 80
 MAX_WIDTH_FOR_RESIZING_EXACTLY = 2000
 MAX_HEIGHT_FOR_RESIZING_EXACTLY = 5000
+WATERMARK_PATH = "images/sample.png"
+WATERMARK_TRANSPARENCY = 80
 
 
 def resize(
@@ -37,6 +39,35 @@ def resize(
     resized_stream = _resize_proportionally(stream, fmt, width, height, quality)
     stream.close()
     return resized_stream
+
+
+def stamp(
+    stream: BytesIO,
+    fmt: ImageFormat,
+) -> BytesIO:
+    image = Image.open(stream, formats=[fmt.name()])
+    # watermark = Image.open(WATERMARK_PATH)
+    watermark = Image.open("images/logo.png", formats=["PNG"])
+    # watermark = watermark.resize((100, 100))
+    watermark.thumbnail((100, 100))
+    # watermark = watermark.resize(image.size)
+    if watermark.mode != "RGBA":
+        alpha = Image.new("L", watermark.size, 255)
+        watermark.putalpha(alpha)
+    paste_mask = watermark.split()[3].point(
+        lambda i: i * WATERMARK_TRANSPARENCY / 100.0
+    )
+    # for x in range(0, image.width, watermark.width):
+    #     for y in range(0, image.height, watermark.height):
+    #         image.paste(watermark, (x, y), mask=paste_mask)
+    # image.paste(watermark, (0, 0), mask=paste_mask)
+    image.paste(
+        watermark,
+        (image.width - watermark.width - 10, 10),
+        mask=paste_mask,
+    )
+
+    return _convert_image_to_bytes_stream(image, fmt, DEFAULT_QUALITY)
 
 
 def _check_negative_length(width: int | None, height: int | None):

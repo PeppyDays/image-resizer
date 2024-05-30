@@ -3,7 +3,7 @@ from io import BytesIO
 import pytest
 from PIL import Image
 
-from image_resizer.image import ImageFormat, resize, InvalidImageRequestError
+from image_resizer.image import ImageFormat, resize, InvalidImageRequestError, stamp
 
 
 @pytest.mark.parametrize("width,height", [(-300, 100), (100, -300)])
@@ -171,6 +171,24 @@ def test_sut_does_not_close_stream_if_both_width_and_height_are_none(
 
     # Assert
     assert not original_stream.closed
+
+
+def test_sut_overlaps_watermark_on_image_correctly(original_stream, original_format):
+    # Arrange
+    sut = stamp
+
+    # Act
+    watermarked_stream = sut(
+        original_stream,
+        original_format,
+    )
+
+    # Assert
+    watermarked_image = Image.open(watermarked_stream)
+    watermarked_image.save(
+        "images/output.jpg",
+        format=original_format.name(),
+    )
 
 
 @pytest.fixture
