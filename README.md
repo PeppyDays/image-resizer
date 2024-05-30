@@ -21,6 +21,8 @@ For backward compatibility, the Lambda function is triggered by the `Origin Requ
 
 After parsing the resizing hint from the requested URI, the Lambda function modifies the URI without the resizing hint and adjust query string to have the matched width. `w` parameter in query string is the requested width for resizing.
 
+This could be achieved by triggering the Lambda function by the `Viewer Request` event. This would be more efficient in terms of cache hit ratio in CloudFront. But, the Lambda function platform for `Viewer Request` event is restricted only to Javascript, and the function will be executed for all image requests, which means higher cost. As a trade-off, the Lambda function triggered by `Origin Request` might have lower cache hit ratio, but the execution count would be much less. As a result, I chose to process this business logic in `Origin Request` event stage.   
+
 ### Origin Response Process
 
 From the request via CloudFront, there are some parameters that are used to resize the image. The parameters are as follows:
