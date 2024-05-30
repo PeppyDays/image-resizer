@@ -1,3 +1,5 @@
+import copy
+
 import pytest
 
 from image_resizer.request import parse, take_resizing_hint
@@ -58,6 +60,23 @@ def test_sut_removes_height_from_query_string_if_resizing_hint_is_given(query_st
     # Assert
     actual = updated_request["querystring"]
     assert "h=" not in actual
+
+
+def test_sut_does_not_change_anything_if_resizing_hint_is_not_found():
+    # Arrange
+    sut = take_resizing_hint
+    request = _request(
+        "/path/to/file.png",
+        "w=100&h=90&q=70",
+        "hello.s3.ap-northeast-2.amazonaws.com",
+    )
+    expected = copy.deepcopy(request)
+
+    # Act
+    actual = sut(request)
+
+    # Assert
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
