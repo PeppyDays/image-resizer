@@ -2,7 +2,8 @@ import base64
 from http import HTTPStatus
 from io import BytesIO
 
-from .image import ImageFormat
+from .image import ImageFormat, InvalidImageRequestError, UnsupportedImageFormatError
+from .storage import ObjectNotFoundError
 
 
 def finalize(
@@ -18,12 +19,12 @@ def finalize(
         _update_body_as(response, stream, fmt)
         _update_cache_control_as(response, 31536000)
     # Add special handling for specific exceptions
-    elif isinstance(exception, FileNotFoundError):
-        _update_status_as(response, HTTPStatus.NOT_FOUND)
-    elif isinstance(exception, ValueError):
+    elif isinstance(exception, InvalidImageRequestError):
         _update_status_as(response, HTTPStatus.BAD_REQUEST)
+    elif isinstance(exception, ObjectNotFoundError):
+        _update_status_as(response, HTTPStatus.NOT_FOUND)
     # Add pass through for listed exceptions
-    elif isinstance(exception, NotImplementedError):
+    elif isinstance(exception, UnsupportedImageFormatError):
         pass
     # Other unexpected errors are handled as internal server errors
     elif isinstance(exception, Exception):

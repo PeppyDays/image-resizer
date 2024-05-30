@@ -3,11 +3,11 @@ from io import BytesIO
 import pytest
 from PIL import Image
 
-from image_resizer.image import ImageFormat, resize
+from image_resizer.image import ImageFormat, resize, InvalidImageRequestError
 
 
 @pytest.mark.parametrize("width,height", [(-300, 100), (100, -300)])
-def test_sut_raises_value_error_when_requested_length_is_negative(
+def test_sut_raises_image_validation_error_when_requested_length_is_negative(
     original_stream,
     original_format,
     width,
@@ -17,12 +17,12 @@ def test_sut_raises_value_error_when_requested_length_is_negative(
     sut = resize
 
     # Act & Assert
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidImageRequestError):
         sut(original_stream, original_format, width, height, None)
 
 
 @pytest.mark.parametrize("width,height", [(2001, 100)])
-def test_sut_raises_value_error_when_requested_width_is_longer_than_2000_with_any_height(
+def test_sut_raises_image_validation_error_when_requested_width_is_longer_than_2000_with_any_height(
     original_stream,
     original_format,
     width,
@@ -32,12 +32,12 @@ def test_sut_raises_value_error_when_requested_width_is_longer_than_2000_with_an
     sut = resize
 
     # Act & Assert
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidImageRequestError):
         sut(original_stream, original_format, width, height, None)
 
 
 @pytest.mark.parametrize("width,height", [(100, 5001)])
-def test_sut_raises_value_error_when_requested_height_is_longer_than_5000_with_any_width(
+def test_sut_raises_image_validation_error_when_requested_height_is_longer_than_5000_with_any_width(
     original_stream,
     original_format,
     width,
@@ -47,7 +47,7 @@ def test_sut_raises_value_error_when_requested_height_is_longer_than_5000_with_a
     sut = resize
 
     # Act & Assert
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidImageRequestError):
         sut(original_stream, original_format, width, height, None)
 
 

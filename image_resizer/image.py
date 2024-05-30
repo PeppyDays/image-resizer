@@ -41,9 +41,9 @@ def resize(
 
 def _check_negative_length(width: int | None, height: int | None):
     if width is not None and width <= 0:
-        raise ValueError(f"Width {width} cannot be negative")
+        raise InvalidImageRequestError(f"Width {width} cannot be negative")
     if height is not None and height <= 0:
-        raise ValueError(f"Height {height} cannot be negative")
+        raise InvalidImageRequestError(f"Height {height} cannot be negative")
 
 
 def _check_too_long_length(width, height):
@@ -52,7 +52,7 @@ def _check_too_long_length(width, height):
         and width > MAX_WIDTH_FOR_RESIZING_EXACTLY
         and height is not None
     ):
-        raise ValueError(
+        raise InvalidImageRequestError(
             f"Width cannot be longer than {MAX_WIDTH_FOR_RESIZING_EXACTLY} px"
         )
     if (
@@ -60,7 +60,7 @@ def _check_too_long_length(width, height):
         and height > MAX_HEIGHT_FOR_RESIZING_EXACTLY
         and width is not None
     ):
-        raise ValueError(
+        raise InvalidImageRequestError(
             f"Width cannot be longer than {MAX_HEIGHT_FOR_RESIZING_EXACTLY} px"
         )
 
@@ -135,7 +135,9 @@ class ImageFormat(Enum):
             case "image/tiff":
                 return ImageFormat.TIFF
             case _:
-                raise NotImplementedError(f"Unsupported image format: {content_type}")
+                raise UnsupportedImageFormatError(
+                    f"Unsupported image format: {content_type}"
+                )
 
     def convert_to(self) -> str:
         match self:
@@ -149,3 +151,13 @@ class ImageFormat(Enum):
                 return "image/webp"
             case ImageFormat.TIFF:
                 return "image/tiff"
+
+
+class InvalidImageRequestError(ValueError):
+    def __init__(self, message: str):
+        super().__init__(message)
+
+
+class UnsupportedImageFormatError(NotImplementedError):
+    def __init__(self, message: str):
+        super().__init__(message)

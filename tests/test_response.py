@@ -3,8 +3,13 @@ from io import BytesIO
 
 import pytest
 
-from image_resizer.image import ImageFormat
+from image_resizer.image import (
+    ImageFormat,
+    InvalidImageRequestError,
+    UnsupportedImageFormatError,
+)
 from image_resizer.response import finalize
+from image_resizer.storage import ObjectNotFoundError
 
 
 def test_sut_updates_simple_properties_if_successful_correctly(response):
@@ -61,19 +66,23 @@ def test_sut_closes_stream_if_successful(response):
     assert stream.closed
 
 
-def test_sut_updates_response_if_value_error_occurred_correctly(response):
+def test_sut_updates_response_if_invalid_image_request_error_occurred_correctly(
+    response,
+):
     # Arrange
     sut = finalize
     stream = BytesIO()
 
     # Act
-    actual = sut(response, stream, ImageFormat.TIFF, ValueError())
+    actual = sut(
+        response, stream, ImageFormat.TIFF, InvalidImageRequestError("invalid")
+    )
 
     # Assert
     assert actual["status"] == 400
 
 
-def test_sut_updates_response_if_file_not_found_correctly(response):
+def test_sut_updates_response_if_object_not_found_correctly(response):
     # Arrange
     sut = finalize
     stream = BytesIO()
@@ -83,7 +92,7 @@ def test_sut_updates_response_if_file_not_found_correctly(response):
         response,
         stream,
         ImageFormat.JPEG,
-        FileNotFoundError(),
+        ObjectNotFoundError("not found"),
     )
 
     # Assert
@@ -131,7 +140,12 @@ def test_sut_returns_original_response_if_listed_pass_through_errors_occurred(re
     expected = copy.deepcopy(response)
 
     # Act
-    actual = sut(response, BytesIO(), ImageFormat.JPEG, NotImplementedError())
+    actual = sut(
+        response,
+        BytesIO(),
+        ImageFormat.JPEG,
+        UnsupportedImageFormatError("unsupported"),
+    )
 
     # Assert
     assert actual == expected

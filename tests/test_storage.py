@@ -7,8 +7,8 @@ from PIL import Image
 from botocore.exceptions import ClientError
 from botocore.response import StreamingBody
 
-from image_resizer.image import ImageFormat
-from image_resizer.storage import load
+from image_resizer.image import ImageFormat, UnsupportedImageFormatError
+from image_resizer.storage import load, ObjectNotFoundError, StorageOperationError
 
 
 def test_sut_send_command_to_client_correctly():
@@ -26,7 +26,7 @@ def test_sut_send_command_to_client_correctly():
     client_spy.get_object.assert_called_once_with(Bucket=bucket, Key=path)
 
 
-def test_sut_raises_file_not_found_error_if_the_requested_path_does_not_exist():
+def test_sut_raises_object_not_found_error_if_the_requested_path_does_not_exist():
     # Arrange
     sut = load
     bucket = "bucket"
@@ -35,11 +35,11 @@ def test_sut_raises_file_not_found_error_if_the_requested_path_does_not_exist():
     client_stub.get_object.side_effect = _client_no_suck_key_error_response(path)
 
     # Act & Assert
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(ObjectNotFoundError):
         sut(client_stub, bucket, path)
 
 
-def test_sut_raises_runtime_error_if_client_error_happens():
+def test_sut_raises_storage_operation_error_if_client_error_happens():
     # Arrange
     sut = load
     bucket = "bucket"
@@ -48,7 +48,7 @@ def test_sut_raises_runtime_error_if_client_error_happens():
     client_stub.get_object.side_effect = ClientError({}, "GetObject")
 
     # Act & Assert
-    with pytest.raises(RuntimeError):
+    with pytest.raises(StorageOperationError):
         sut(client_stub, bucket, path)
 
 
@@ -77,7 +77,7 @@ def test_sut_returns_image_format_correctly(content_type, expected):
     assert actual == expected
 
 
-def test_sut_raises_not_implemented_error_if_image_format_is_unsupported():
+def test_sut_raises_unsupported_image_format_error_if_image_format_is_unsupported():
     # Arrange
     sut = load
     bucket = "bucket"
@@ -88,7 +88,7 @@ def test_sut_raises_not_implemented_error_if_image_format_is_unsupported():
     )
 
     # Act & Assert
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(UnsupportedImageFormatError):
         sut(client_stub, bucket, path)
 
 
