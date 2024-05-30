@@ -68,7 +68,7 @@ poetry install
 pytest --cov
 ```
 
-### Deploy
+### Deployment
 
 > Should be automated in the future, but for now, it is a manual process.
 
@@ -78,10 +78,19 @@ pytest --cov
 
 ## Reference
 
+### Concept
+
 - https://aws.amazon.com/blogs/networking-and-content-delivery/resizing-images-with-amazon-cloudfront-lambdaedge-aws-cdn-blog
 - https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-at-edge-function-restrictions.html
+
+### Implementation
+
 - https://github.com/healingpaper-solution/image-resizer-lambda
 - https://github.dev/hoony9x/aws-lambda-edge-img-resize-function
 - https://taxijjang.tistory.com/185
 - https://velog.io/@kpl5672/python-pillow-resize-thumbnail-%EC%82%AC%EC%9A%A9-%EC%8B%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-rotate%EB%90%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0
+- https://stackoverflow.com/questions/50963537/pil-make-image-transparent-on-a-percent-scale
+
+### Deployment
+
 - https://docs.aws.amazon.com/lambda/latest/dg/python-package.html
