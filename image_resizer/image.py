@@ -68,7 +68,7 @@ def _check_too_long_length(width, height):
 def _resize_exactly(
     stream: BytesIO, fmt: str, width: int, height: int, quality: int
 ) -> BytesIO:
-    image = Image.open(stream)
+    image = Image.open(stream, formats=[fmt])
     image = image.resize((width, height))
     return _convert_image_to_bytes_stream(image, fmt, quality)
 
@@ -80,7 +80,7 @@ def _resize_proportionally(
     height: int | None,
     quality: int,
 ) -> BytesIO:
-    image = Image.open(stream)
+    image = Image.open(stream, formats=[fmt])
     width, height = _fill_missing_length(image.width, image.height, width, height)
     image.thumbnail((width, height))
     return _convert_image_to_bytes_stream(image, fmt, quality)
