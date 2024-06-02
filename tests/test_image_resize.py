@@ -3,7 +3,13 @@ from io import BytesIO
 import pytest
 from PIL import Image
 
-from image_resizer.image import ImageFormat, resize, InvalidImageRequestError
+from image_resizer.image import (
+    ImageFormat,
+    resize,
+    InvalidImageRequestError,
+    MAX_WIDTH,
+    MAX_HEIGHT,
+)
 
 
 @pytest.mark.parametrize("width,height", [(-300, 100), (100, -300)])
@@ -21,8 +27,14 @@ def test_sut_raises_image_validation_error_when_requested_length_is_negative(
         sut(original_stream, original_format, width, height, None)
 
 
-@pytest.mark.parametrize("width,height", [(2001, 100)])
-def test_sut_raises_image_validation_error_when_requested_width_is_longer_than_2000_with_any_height(
+@pytest.mark.parametrize(
+    "width,height",
+    [
+        (MAX_WIDTH + 1, 100),
+        (MAX_WIDTH + 1, None),
+    ],
+)
+def test_sut_raises_image_validation_error_when_requested_width_is_longer_than_max_width(
     original_stream,
     original_format,
     width,
@@ -36,8 +48,14 @@ def test_sut_raises_image_validation_error_when_requested_width_is_longer_than_2
         sut(original_stream, original_format, width, height, None)
 
 
-@pytest.mark.parametrize("width,height", [(100, 5001)])
-def test_sut_raises_image_validation_error_when_requested_height_is_longer_than_5000_with_any_width(
+@pytest.mark.parametrize(
+    "width,height",
+    [
+        (100, MAX_HEIGHT + 1),
+        (None, MAX_HEIGHT + 1),
+    ],
+)
+def test_sut_raises_image_validation_error_when_requested_height_is_longer_than_max_height(
     original_stream,
     original_format,
     width,
@@ -104,7 +122,9 @@ def test_sut_resizes_image_having_same_length_as_requested_if_one_of_width_and_h
     assert actual.width == width or actual.height == height
 
 
-@pytest.mark.parametrize("width,height", [(10000, None), (None, 10000)])
+@pytest.mark.parametrize(
+    "width,height", [(MAX_WIDTH - 1, None), (None, MAX_HEIGHT - 1)]
+)
 def test_sut_does_not_resize_to_make_bigger_than_original_image_if_one_of_width_and_height_is_none(
     original_stream,
     original_format,

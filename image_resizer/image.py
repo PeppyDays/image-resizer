@@ -6,8 +6,8 @@ from io import BytesIO
 from PIL import Image
 
 DEFAULT_QUALITY = 80
-MAX_WIDTH_FOR_RESIZING_EXACTLY = 2000
-MAX_HEIGHT_FOR_RESIZING_EXACTLY = 5000
+MAX_WIDTH = 2000
+MAX_HEIGHT = 5000
 
 
 def resize(
@@ -51,22 +51,10 @@ def _check_negative_length(width: int | None, height: int | None):
 
 
 def _check_too_long_length(width, height):
-    if (
-        width is not None
-        and width > MAX_WIDTH_FOR_RESIZING_EXACTLY
-        and height is not None
-    ):
-        raise InvalidImageRequestError(
-            f"Width cannot be longer than {MAX_WIDTH_FOR_RESIZING_EXACTLY} px"
-        )
-    if (
-        height is not None
-        and height > MAX_HEIGHT_FOR_RESIZING_EXACTLY
-        and width is not None
-    ):
-        raise InvalidImageRequestError(
-            f"Width cannot be longer than {MAX_HEIGHT_FOR_RESIZING_EXACTLY} px"
-        )
+    if width is not None and width > MAX_WIDTH:
+        raise InvalidImageRequestError(f"Width cannot be longer than {MAX_WIDTH} px")
+    if height is not None and height > MAX_HEIGHT:
+        raise InvalidImageRequestError(f"Width cannot be longer than {MAX_HEIGHT} px")
 
 
 def _resize_exactly(
