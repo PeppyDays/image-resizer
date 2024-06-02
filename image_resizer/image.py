@@ -34,9 +34,13 @@ def resize(
         return resized_stream
 
     # If both width and height are not None, resize the image exactly and ignore the ratio
-    resized_stream = _resize_proportionally(stream, fmt, width, height, quality)
-    stream.close()
-    return resized_stream
+    if width is not None and height is not None:
+        resized_stream = _resize_proportionally(stream, fmt, width, height, quality)
+        stream.close()
+        return resized_stream
+
+    # Control should not be reached here
+    raise RuntimeError("Unexpected image resize request")
 
 
 def _check_negative_length(width: int | None, height: int | None):
