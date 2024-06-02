@@ -19,6 +19,20 @@ def load(client, bucket: str, path: str) -> tuple[BytesIO, ImageFormat]:
         ) from e
 
 
+def save(client, bucket: str, path: str, stream: BytesIO, fmt: ImageFormat) -> None:
+    try:
+        client.put_object(
+            Bucket=bucket,
+            Key=path,
+            Body=stream.getvalue(),
+            ContentType=fmt.value,
+        )
+    except ClientError as e:
+        raise StorageOperationError(
+            f"Failed to save image to S3: {bucket}/{path}"
+        ) from e
+
+
 class ObjectNotFoundError(FileNotFoundError):
     def __init__(self, message: str):
         super().__init__(message)

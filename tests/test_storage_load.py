@@ -110,7 +110,7 @@ def test_sut_returns_io_stream_correctly():
     ).save("resized.png", format=fmt.name)
 
 
-def _client_no_suck_key_error_response(path):
+def _client_no_suck_key_error_response(path) -> ClientError:
     client_response = {
         "Error": {
             "Code": "NoSuchKey",
@@ -122,7 +122,7 @@ def _client_no_suck_key_error_response(path):
     return ClientError(client_response, client_operation_name)
 
 
-def _client_normal_response(content_type: str, raw_stream: bytes):
+def _client_normal_response(content_type: str, raw_stream: bytes) -> dict:
     return {
         "ContentType": content_type,
         "Body": StreamingBody(BytesIO(raw_stream), len(raw_stream)),
