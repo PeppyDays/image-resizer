@@ -105,7 +105,7 @@ def _fill_missing_length(
 
 
 def _convert_image_to_bytes_stream(
-    image: Image, fmt: ImageFormat, quality: int
+    image: Image.Image, fmt: ImageFormat, quality: int
 ) -> BytesIO:
     stream = BytesIO()
     image.save(stream, format=fmt.name, optimize=True, quality=quality)
