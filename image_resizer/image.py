@@ -27,14 +27,14 @@ def resize(
     if width is None and height is None:
         return stream
 
-    # If one of width and height is None, resize the image keeping the ratio
+    # If both width and height are not None, resize the image exactly and ignore the ratio
     if width is not None and height is not None:
         resized_stream = _resize_exactly(stream, fmt, width, height, quality)
         stream.close()
         return resized_stream
 
-    # If both width and height are not None, resize the image exactly and ignore the ratio
-    if width is not None and height is not None:
+    # If one of width and height is None, resize the image keeping the ratio
+    if width is not None or height is not None:
         resized_stream = _resize_proportionally(stream, fmt, width, height, quality)
         stream.close()
         return resized_stream
