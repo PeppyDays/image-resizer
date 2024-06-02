@@ -12,10 +12,10 @@ This is a simple image resizer for image download via CloudFront. It is implemen
 
 For backward compatibility, the Lambda function is triggered by the `Origin Request` event for some specific cases. If the requested URI is like `/path/to/file_L.jpg`, the postfix of the file name `_L` is used to resize the image. Let's call the postfix as resizing hint. There are four types of resizing hints:
 
-- `_T` wants to resize the image width to 100 px
-- `_S` wants to resize the image width to 200 px
-- `_M` wants to resize the image width to 300 px
-- `_L` wants to resize the image width to 400 px
+- `_t` wants to resize the image width to 100 px
+- `_s` wants to resize the image width to 200 px
+- `_m` wants to resize the image width to 300 px
+- `_l` wants to resize the image width to 400 px
 
 > The specific width of each postfix should be rechecked and updated if necessary.
 
