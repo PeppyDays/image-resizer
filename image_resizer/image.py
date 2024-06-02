@@ -68,7 +68,7 @@ def _check_too_long_length(width, height):
 def _resize_exactly(
     stream: BytesIO, fmt: ImageFormat, width: int, height: int, quality: int
 ) -> BytesIO:
-    image = Image.open(stream, formats=[fmt.name()])
+    image = Image.open(stream, formats=[fmt.name])
     image = image.resize((width, height))
     return _convert_image_to_bytes_stream(image, fmt, quality)
 
@@ -80,7 +80,7 @@ def _resize_proportionally(
     height: int | None,
     quality: int,
 ) -> BytesIO:
-    image = Image.open(stream, formats=[fmt.name()])
+    image = Image.open(stream, formats=[fmt.name])
     width, height = _fill_missing_length(image.width, image.height, width, height)
     image.thumbnail((width, height))
     return _convert_image_to_bytes_stream(image, fmt, quality)
@@ -104,53 +104,28 @@ def _convert_image_to_bytes_stream(
     image: Image, fmt: ImageFormat, quality: int
 ) -> BytesIO:
     stream = BytesIO()
-    image.save(stream, format=fmt.name(), optimize=True, quality=quality)
+    image.save(stream, format=fmt.name, optimize=True, quality=quality)
     return stream
 
 
 class ImageFormat(Enum):
-    JPEG = "JPEG"
-    PNG = "PNG"
-    GIF = "GIF"
-    WEBP = "WEBP"
-    TIFF = "TIFF"
+    JPEG = "image/jpeg"
+    PNG = "image/png"
+    GIF = "image/gif"
+    WEBP = "image/webp"
+    TIFF = "image/tiff"
 
     def __str__(self):
         return self.value
 
-    def name(self):
-        return self.value
-
     @staticmethod
-    def convert_from(content_type: str) -> ImageFormat:
-        match content_type:
-            case "image/jpeg":
-                return ImageFormat.JPEG
-            case "image/png":
-                return ImageFormat.PNG
-            case "image/gif":
-                return ImageFormat.GIF
-            case "image/webp":
-                return ImageFormat.WEBP
-            case "image/tiff":
-                return ImageFormat.TIFF
-            case _:
-                raise UnsupportedImageFormatError(
-                    f"Unsupported image format: {content_type}"
-                )
-
-    def convert_to(self) -> str:
-        match self:
-            case ImageFormat.JPEG:
-                return "image/jpeg"
-            case ImageFormat.PNG:
-                return "image/png"
-            case ImageFormat.GIF:
-                return "image/gif"
-            case ImageFormat.WEBP:
-                return "image/webp"
-            case ImageFormat.TIFF:
-                return "image/tiff"
+    def try_from(content_type: str) -> ImageFormat:
+        try:
+            return ImageFormat(content_type)
+        except ValueError:
+            raise UnsupportedImageFormatError(
+                f"Unsupported image format: {content_type}"
+            )
 
 
 class InvalidImageRequestError(ValueError):

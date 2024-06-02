@@ -51,7 +51,7 @@ def _update_body_as(
     response["bodyEncoding"] = "base64"
     response["body"] = base64.standard_b64encode(stream.getvalue()).decode()
     response["headers"]["content-type"] = [
-        {"key": "Content-Type", "value": fmt.convert_to()},
+        {"key": "Content-Type", "value": fmt.value},
     ]
 
 

@@ -74,14 +74,14 @@ def test_sut_resizes_image_by_keeping_ratio_if_one_of_width_and_height_is_none(
 ):
     # Arrange
     sut = resize
-    original_image = Image.open(original_stream, formats=[original_format.name()])
+    original_image = Image.open(original_stream, formats=[original_format.name])
     expected = float(original_image.width) / original_image.height
 
     # Act
     resized_stream = sut(original_stream, original_format, width, height, None)
 
     # Assert
-    resized_image = Image.open(resized_stream, formats=[original_format.name()])
+    resized_image = Image.open(resized_stream, formats=[original_format.name])
     actual = float(resized_image.width) / resized_image.height
     assert actual == pytest.approx(expected, 0.01)
 
@@ -100,7 +100,7 @@ def test_sut_resizes_image_having_same_length_as_requested_if_one_of_width_and_h
     resized_stream = sut(original_stream, original_format, width, height, None)
 
     # Assert
-    actual = Image.open(resized_stream, formats=[original_format.name()])
+    actual = Image.open(resized_stream, formats=[original_format.name])
     assert actual.width == width or actual.height == height
 
 
@@ -113,13 +113,13 @@ def test_sut_does_not_resize_to_make_bigger_than_original_image_if_one_of_width_
 ):
     # Arrange
     sut = resize
-    expected = Image.open(original_stream, formats=[original_format.name()])
+    expected = Image.open(original_stream, formats=[original_format.name])
 
     # Act
     resized_stream = sut(original_stream, original_format, width, height, None)
 
     # Assert
-    actual = Image.open(resized_stream, formats=[original_format.name()])
+    actual = Image.open(resized_stream, formats=[original_format.name])
     assert actual.width == expected.width
     assert actual.height == expected.height
 
@@ -138,7 +138,7 @@ def test_sut_resizes_exactly_having_same_length_as_requested_if_width_and_height
     resized_stream = sut(original_stream, original_format, width, height, None)
 
     # Assert
-    actual = Image.open(resized_stream, formats=[original_format.name()])
+    actual = Image.open(resized_stream, formats=[original_format.name])
     assert actual.width == width and actual.height == height
 
 

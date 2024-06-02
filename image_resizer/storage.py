@@ -8,7 +8,7 @@ from .image import ImageFormat
 def load(client, bucket: str, path: str) -> tuple[BytesIO, ImageFormat]:
     try:
         response = client.get_object(Bucket=bucket, Key=path)
-        fmt = ImageFormat.convert_from(response["ContentType"])
+        fmt = ImageFormat.try_from(response["ContentType"])
         stream = BytesIO(response["Body"].read())
         return stream, fmt
     except ClientError as e:

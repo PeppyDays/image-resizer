@@ -22,6 +22,7 @@ def handle(event, _context):
 
 
 def _handle_origin_request_event(request):
+    # Take resizing hint from the request and modify uri and length-related query parameters in the request
     return take_resizing_hint(request)
 
 

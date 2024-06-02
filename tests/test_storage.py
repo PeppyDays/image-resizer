@@ -106,8 +106,8 @@ def test_sut_returns_io_stream_correctly():
     # Assert
     Image.open(
         stream,
-        formats=[fmt.name()],
-    ).save("resized.png", format=fmt.name())
+        formats=[fmt.name],
+    ).save("resized.png", format=fmt.name)
 
 
 def _client_no_suck_key_error_response(path):
