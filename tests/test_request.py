@@ -5,11 +5,20 @@ import pytest
 from image_resizer.request import parse, take_resizing_hint
 
 
-def test_sut_removes_resizing_hint_from_uri_if_resizing_hint_is_given():
+@pytest.mark.parametrize(
+    "uri,expected",
+    [
+        ("/path/to/file_t.png", "/path/to/file.png"),
+        ("/path/to/file_s.png", "/path/to/file.png"),
+        ("/path/to/file_m.png", "/path/to/file.png"),
+        ("/path/to/file_l.png", "/path/to/file.png"),
+    ],
+)
+def test_sut_removes_resizing_hint_from_uri_if_resizing_hint_is_given(uri, expected):
     # Arrange
     sut = take_resizing_hint
     request = _request(
-        "/path/to/file_T.png",
+        uri,
         "w=100&h=90&q=70",
         "hello.s3.ap-northeast-2.amazonaws.com",
     )
@@ -19,11 +28,11 @@ def test_sut_removes_resizing_hint_from_uri_if_resizing_hint_is_given():
 
     # Assert
     actual = updated_request["uri"]
-    assert actual == "/path/to/file.png"
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
-    "resizing_hint,expected", [("_T", 100), ("_S", 200), ("_M", 300), ("_L", 400)]
+    "resizing_hint,expected", [("_t", 100), ("_s", 200), ("_m", 300), ("_l", 400)]
 )
 def test_sut_updates_width_in_query_string_if_resizing_hint_is_given(
     resizing_hint, expected
@@ -49,7 +58,7 @@ def test_sut_removes_height_from_query_string_if_resizing_hint_is_given(query_st
     # Arrange
     sut = take_resizing_hint
     request = _request(
-        "/path/to/file_L.png",
+        "/path/to/file_l.png",
         query_string,
         "hello.s3.ap-northeast-2.amazonaws.com",
     )

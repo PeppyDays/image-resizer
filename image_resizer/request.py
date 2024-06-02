@@ -1,13 +1,12 @@
 import re
 from urllib.parse import parse_qs, unquote, urlencode
 
-# TODO: Modify the exact width for each resizing hint
 # Map of resizing hint and expected width
 RESIZING_HINT = {
-    "_T": 100,
-    "_S": 200,
-    "_M": 300,
-    "_L": 400,
+    "_t": 100,
+    "_s": 200,
+    "_m": 300,
+    "_l": 400,
 }
 
 
@@ -36,11 +35,11 @@ def parse(request: dict) -> tuple[str, str, int | None, int | None, int | None]:
 
 
 def _parse_resizing_hint_and_uri(request: dict) -> tuple[str | None, str]:
-    # "/path/to", "hello_T.png" <- "/path/to/hello_T.png"
+    # "/path/to", "hello_t.png" <- "/path/to/hello_t.png"
     directory_path, file_name_with_extension = request["uri"].rsplit("/", 1)
-    # "hello_T", "png" <- "hello_T.png"
+    # "hello_t", "png" <- "hello_t.png"
     file_name, extension = file_name_with_extension.rsplit(".", 1)
-    # "hello", "_T" <- "hello_T"
+    # "hello", "_t" <- "hello_t"
     file_name_without_resizing_hint, resizing_hint = file_name[:-2], file_name[-2:]
 
     if resizing_hint in RESIZING_HINT:
